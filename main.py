@@ -8,8 +8,11 @@ import requests
 try:
     DOMAIN = sys.argv[1]
     API_KEY = sys.argv[2]
-except Exception:
+except (IndexError, ValueError):
     print("Usage: python3 main.py <domain> <api_key>\n")
+    exit(1)
+except Exception as e:
+    print(f"Unexpected error: {e}")
     exit(1)
 
 
@@ -37,11 +40,14 @@ def get_record_ip(record_id):
 try:
     with open("./last_ip.txt", "r") as f:
         last_ip = f.read()
-except Exception:
+except FileNotFoundError:
     with open("./last_ip.txt", "w") as f:
         obtained_ip = get_current_ip()
         f.write(obtained_ip)
         last_ip = obtained_ip
+except Exception as e:
+    print(f"Unexpected error: {e}\n")
+    exit(1)
 
 
 current_time = datetime.datetime.now()
