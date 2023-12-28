@@ -9,6 +9,7 @@ try:
     DOMAIN = sys.argv[1]
     API_KEY = sys.argv[2]
 except Exception:
+    print("Usage: python3 main.py <domain> <api_key>\n")
     exit(1)
 
 
