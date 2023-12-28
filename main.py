@@ -3,7 +3,6 @@ import time
 import datetime
 import requests
 
-
 # Parse script config
 try:
     DOMAIN = sys.argv[1]
@@ -21,20 +20,20 @@ def get_current_ip():
 
 
 def get_records_ids():
-    target_record = requests.get(f"https://api.digitalocean.com/v2/domains/{DOMAIN}/records", 
-                             params={"type": "A", "per_page": 200},
-                             headers={"Authorization": f"Bearer {API_KEY}"})
+    target_record = requests.get(f"https://api.digitalocean.com/v2/domains/{DOMAIN}/records",
+                                 params={"type": "A", "per_page": 200},
+                                 headers={"Authorization": f"Bearer {API_KEY}"})
     json_result = target_record.json()
     id_list = [x["id"] for x in json_result["domain_records"]]
     return id_list
 
 
 def get_record_ip(record_id):
-    record_data = requests.get(f"https://api.digitalocean.com/v2/domains/{DOMAIN}/records/{record_id}", 
-                             headers={"Authorization": f"Bearer {API_KEY}"})
+    record_data = requests.get(f"https://api.digitalocean.com/v2/domains/{DOMAIN}/records/{record_id}",
+                               headers={"Authorization": f"Bearer {API_KEY}"})
     json_data = record_data.json()
     return json_data['domain_record']['data']
-    
+
 
 # Load last IP from file
 try:
@@ -49,10 +48,8 @@ except Exception as e:
     print(f"Unexpected error: {e}\n")
     exit(1)
 
-
 current_time = datetime.datetime.now()
 record_ids = get_records_ids()
-
 
 # Driver code
 while True:
@@ -65,10 +62,8 @@ while True:
         with open("./last_ip.txt", "w") as f:
             f.write(new_ip)
         for record_id in record_ids:
-            requests.patch(f"https://api.digitalocean.com/v2/domains/{DOMAIN}/records/{record_id}", 
-                            json={"type": "A", "data": f"{new_ip}"},
-                            headers={"Authorization": f"Bearer {API_KEY}"})
+            requests.patch(f"https://api.digitalocean.com/v2/domains/{DOMAIN}/records/{record_id}",
+                           json={"type": "A", "data": f"{new_ip}"},
+                           headers={"Authorization": f"Bearer {API_KEY}"})
             time.sleep(5)
         last_ip = new_ip
-
-        
