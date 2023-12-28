@@ -28,8 +28,8 @@ def get_records_ids():
     return id_list
 
 
-def get_record_ip(record_id):
-    record_data = requests.get(f"https://api.digitalocean.com/v2/domains/{DOMAIN}/records/{record_id}",
+def get_record_ip(subdomain_record_id):
+    record_data = requests.get(f"https://api.digitalocean.com/v2/domains/{DOMAIN}/records/{subdomain_record_id}",
                                headers={"Authorization": f"Bearer {API_KEY}"})
     json_data = record_data.json()
     return json_data['domain_record']['data']
