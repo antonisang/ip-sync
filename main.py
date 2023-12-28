@@ -52,7 +52,7 @@ while True:
     if current_time + datetime.timedelta(hours=1) < datetime.datetime.now():
         record_ids = get_records_ids()
         current_time = datetime.datetime.now()
-    time.sleep(20)
+    time.sleep(180)
     new_ip = get_current_ip()
     if (last_ip != new_ip) or (new_ip != get_record_ip(record_ids[0])):
         with open("./last_ip.txt", "w") as f:
