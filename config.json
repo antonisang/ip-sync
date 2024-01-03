@@ -1,0 +1,14 @@
+{
+  "api_key": "my_digital_ocean_api_key",
+  "update_domains": ["example.net", "example.io", "example.com"],
+  "exceptions": [
+    {
+      "domain": "example.net",
+      "subdomains": ["mail"]
+    },
+    {
+      "domain": "example.io",
+      "subdomains": ["webmail", "testing"]
+    }
+  ]
+}
