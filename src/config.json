@@ -1,6 +1,6 @@
 {
   "api_key": "my_digital_ocean_api_key",
-  "update_domains": ["example.net", "example.io", "example.com"],
+  "domains": ["example.net", "example.io", "example.com"],
   "exceptions": [
     {
       "domain": "example.net",

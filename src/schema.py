@@ -29,7 +29,7 @@ class Config(object):
 
         # Parse and load config
         self.api_key: str = tmp["api_key"]
-        self.update_domains: list[str] = tmp["update_domains"]
+        self.domains: list[str] = tmp["domains"]
 
         # No exceptions specified
         if not tmp.get("exceptions"):
@@ -40,5 +40,5 @@ class Config(object):
                 self.exceptions.append(DomainExceptions(exception["domain"], exception["subdomains"]))
 
     api_key: str
-    update_domains: list[str]
+    domains: list[str]
     exceptions: list[DomainExceptions] | None
