@@ -28,8 +28,8 @@ class Config(object):
             raise ValueError("Invalid config file")
 
         # Parse and load config
-        self.api_key: str = tmp["api_key"]
-        self.domains: list[str] = tmp["domains"]
+        self.api_key = tmp["api_key"]
+        self.domains = tmp["domains"]
 
         # No exceptions specified
         if not tmp.get("exceptions"):
