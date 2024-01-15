@@ -2,16 +2,13 @@ import sys
 import time
 import datetime
 import requests
+from schema import Config
 
 # Parse script config
 try:
-    DOMAIN = sys.argv[1]
-    API_KEY = sys.argv[2]
-except (IndexError, ValueError):
-    print("Usage: python3 main.py <domain> <api_key>\n")
-    exit(1)
+    CONFIG = Config("./config.json")
 except Exception as e:
-    print(f"Unexpected error: {e}")
+    print(e)
     exit(1)
 
 

@@ -18,14 +18,9 @@ class Config(object):
     An object to safely read, parse, load and provide configuration data
     """
     def __init__(self, filename: str) -> None:
-        # Read config, in case of error, propagate error to be handled by main.py
-        try:
-            with open(filename, "r") as file:
-                tmp: dict = json.load(file)
-        except FileNotFoundError:
-            raise FileNotFoundError("Couldn't locate config.json file")
-        except ValueError:
-            raise ValueError("Invalid config file")
+        # Read config
+        with open(filename, "r") as file:
+            tmp: dict = json.load(file)
 
         # Parse and load config
         self.api_key = tmp["api_key"]
