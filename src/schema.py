@@ -12,6 +12,12 @@ class Config(object):
 
         # Parse and load config
         try:
+            if not isinstance(tmp["api_key"], str):
+                raise ValueError("'api_key' must be a string")
+            if not isinstance(tmp["domains"], list):
+                raise ValueError("'domains' must be an array")
+            if not all(isinstance(x, str) for x in tmp["domains"]):
+                raise ValueError("'domains' must be an array of strings")
             self.api_key = tmp["api_key"]
             self.domains = tmp["domains"]
         except KeyError:
