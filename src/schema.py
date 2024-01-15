@@ -1,18 +1,6 @@
 import json
 
 
-class DomainExceptions(object):
-    """
-    An object that describes subdomains to be excepted from updating for a given domain
-    """
-    def __init__(self, domain: str, subdomains: list[str]) -> None:
-        self.domain = domain
-        self.subdomains = subdomains
-
-    domain: str
-    subdomains: list[str]
-
-
 class Config(object):
     """
     An object to safely read, parse, load and provide configuration data
@@ -33,14 +21,36 @@ class Config(object):
         if not tmp.get("exceptions"):
             self.exceptions = None
         else:
-            self.exceptions = list()
+            # Exceptions are defined
+            self.exceptions = dict()
             try:
                 for exception in tmp["exceptions"]:
-                    self.exceptions.append(DomainExceptions(exception["domain"], exception["subdomains"]))
+                    if self.exception_valid_format(exception):
+                        self.exceptions.update({exception["domain"]: exception["subdomains"]})
             except KeyError:
                 raise KeyError("Exceptions are not correctly defined. "
                                "Consult template.json for recommended file format")
+            # No exception met the required format
+            if len(self.exceptions) == 0:
+                self.exceptions = None
+
+    @staticmethod
+    def exception_valid_format(exception: dict[str, str | list[str]]) -> bool:
+        """
+        This method returns ``True`` if passed ``exception`` meets the following criteria:
+
+        - The ``domain`` key has a value of type ``str``
+        - The ``subdomains`` key has a value of type ``list``
+        - The ``subdomains`` list has more than 0 items
+        - All items of ``subdomains`` list are of type ``str``
+        """
+        if isinstance(exception["domain"], str):
+            if isinstance(exception["subdomains"], list):
+                if len(exception["subdomains"]) > 0:
+                    if all(isinstance(x, str) for x in exception["subdomains"]):
+                        return True
+        return False
 
     api_key: str
     domains: list[str]
-    exceptions: list[DomainExceptions] | None
+    exceptions: dict[str, list[str]] | None
