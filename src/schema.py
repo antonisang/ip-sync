@@ -23,16 +23,23 @@ class Config(object):
             tmp: dict = json.load(file)
 
         # Parse and load config
-        self.api_key = tmp["api_key"]
-        self.domains = tmp["domains"]
+        try:
+            self.api_key = tmp["api_key"]
+            self.domains = tmp["domains"]
+        except KeyError:
+            raise KeyError("Either 'api_key' or 'domains' is missing from config file")
 
         # No exceptions specified
         if not tmp.get("exceptions"):
             self.exceptions = None
         else:
             self.exceptions = list()
-            for exception in tmp["exceptions"]:
-                self.exceptions.append(DomainExceptions(exception["domain"], exception["subdomains"]))
+            try:
+                for exception in tmp["exceptions"]:
+                    self.exceptions.append(DomainExceptions(exception["domain"], exception["subdomains"]))
+            except KeyError:
+                raise KeyError("Exceptions are not correctly defined. "
+                               "Consult template.json for recommended file format")
 
     api_key: str
     domains: list[str]
