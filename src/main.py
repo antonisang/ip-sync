@@ -1,10 +1,9 @@
-import sys
 import time
 import datetime
 import requests
 from schema import Config
 
-# Parse script config
+# Load script config
 try:
     CONFIG = Config("./config.json")
 except Exception as e:
