@@ -46,9 +46,15 @@ def get_records_ids(domain: str) -> list[dict[str, str | int | None]]:
     return json_result
 
 
-def get_record_ip(subdomain_record_id):
-    record_data = requests.get(f"https://api.digitalocean.com/v2/domains/{DOMAIN}/records/{subdomain_record_id}",
-                               headers={"Authorization": f"Bearer {API_KEY}"})
+def get_record_ip(subdomain_domain: str, subdomain_id: str) -> str:
+    """
+    Returns the IPv4 address of the specified subdomain by the function arguments
+    :param subdomain_domain: The domain name that the desired record is in
+    :param subdomain_id: The subdomain record ID to get the IPv4 address for
+    :return:
+    """
+    record_data = requests.get(f"https://api.digitalocean.com/v2/domains/{subdomain_domain}/records/{subdomain_id}",
+                               headers={"Authorization": f"Bearer {CONFIG.api_key}"})
     json_data = record_data.json()
     return json_data['domain_record']['data']
 
