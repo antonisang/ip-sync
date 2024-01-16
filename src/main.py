@@ -19,7 +19,7 @@ def get_current_ip() -> str:
     return requests.get("https://api.ipify.org").text
 
 
-def get_records_ids(domain: str) -> list[dict[str, str | int | None]]:
+def get_records(domain: str) -> list[dict[str, str | int | None]]:
     """
     Returns a list of all A-type records. Each record is a dictionary with the following format::
 
