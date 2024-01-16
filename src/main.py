@@ -19,13 +19,31 @@ def get_current_ip() -> str:
     return requests.get("https://api.ipify.org").text
 
 
-def get_records_ids():
-    target_record = requests.get(f"https://api.digitalocean.com/v2/domains/{DOMAIN}/records",
+def get_records_ids(domain: str) -> list[dict[str, str | int | None]]:
+    """
+    Returns a list of all A-type records. Each record is a dictionary with the following format::
+
+        {
+            'data': '177.48.59.2',
+            'flags': None,
+            'id': 0123456789,
+            'name': 'sales',
+            'port': None,
+            'priority': None,
+            'tag': None,
+            'ttl': 3600,
+            'type': 'A',
+            'weight': None,
+        }
+
+    :param domain: The domain to get records for
+    :returns: A list of dictionaries containing data about the domain records
+    """
+    target_record = requests.get(f"https://api.digitalocean.com/v2/domains/{domain}/records",
                                  params={"type": "A", "per_page": 200},
-                                 headers={"Authorization": f"Bearer {API_KEY}"})
-    json_result = target_record.json()
-    id_list = [x["id"] for x in json_result["domain_records"]]
-    return id_list
+                                 headers={"Authorization": f"Bearer {CONFIG.api_key}"})
+    json_result = target_record.json()["domain_records"]
+    return json_result
 
 
 def get_record_ip(subdomain_record_id):
