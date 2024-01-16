@@ -11,7 +11,11 @@ except Exception as e:
     exit(1)
 
 
-def get_current_ip():
+def get_current_ip() -> str:
+    """
+    Returns the current external IPv4 address of the system
+    :return: An IPv4 address as a string
+    """
     return requests.get("https://api.ipify.org").text
 
 
