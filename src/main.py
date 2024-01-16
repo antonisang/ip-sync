@@ -59,6 +59,23 @@ def get_record_ip(subdomain_domain: str, subdomain_id: str) -> str:
     return json_data['domain_record']['data']
 
 
+def get_filtered_records(domains: list[str], exceptions: dict[str, list[str]]) -> dict[str, list[str]]:
+    """
+    Obtains all the A-type records of each domain, filters them against the exceptions dictionary and returns a new
+    dictionary containing the domain as a key and each allowed subdomain ID in a list of strings as values
+    :param domains: A list of domains as strings to obtain records from
+    :param exceptions: A dictionary using the domain as a key and the subdomains to exclude as a list of strings
+    :return: A dictionary with all the domains as keys and subdomain IDs as a list of strings as values
+    """
+    filtered_records = dict()
+    for domain in domains:
+        domain_records = get_records(domain)
+        if len(domain_records) > 0:
+            filtered_domain_records = [d for d in domain_records if d["name"] not in exceptions[domain]]
+            filtered_records[domain] = [d["id"] for d in filtered_domain_records]
+    return filtered_records
+
+
 # Load last IP from file
 try:
     with open("./last_ip.txt", "r") as f:
