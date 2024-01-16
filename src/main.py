@@ -90,12 +90,12 @@ except Exception as e:
     exit(1)
 
 current_time = datetime.datetime.now()
-record_ids = get_records_ids()
+record_ids = get_filtered_records(CONFIG.domains, CONFIG.exceptions)
 
 # Driver code
 while True:
     if current_time + datetime.timedelta(hours=1) < datetime.datetime.now():
-        record_ids = get_records_ids()
+        record_ids = get_filtered_records(CONFIG.domains, CONFIG.exceptions)
         current_time = datetime.datetime.now()
     time.sleep(180)
     new_ip = get_current_ip()
