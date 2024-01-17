@@ -73,6 +73,11 @@ def get_filtered_records(domains: list[str], exceptions: dict[str, list[str]]) -
         if len(domain_records) > 0:
             filtered_domain_records = [d for d in domain_records if d["name"] not in exceptions[domain]]
             filtered_records[domain] = [d["id"] for d in filtered_domain_records]
+            # All subdomains are included in the exceptions
+            if len(filtered_records[domain]) == 0:
+                print(f"All subdomains for {domain} have been excluded. Please consider removing the {domain} "
+                      f"from the domains array or remove some of its exceptions")
+                exit(1)
     return filtered_records
 
 
