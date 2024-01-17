@@ -76,19 +76,6 @@ def get_filtered_records(domains: list[str], exceptions: dict[str, list[str]]) -
     return filtered_records
 
 
-# Load last IP from file
-try:
-    with open("./last_ip.txt", "r") as f:
-        last_ip = f.read()
-except FileNotFoundError:
-    with open("./last_ip.txt", "w") as f:
-        obtained_ip = get_current_ip()
-        f.write(obtained_ip)
-        last_ip = obtained_ip
-except Exception as e:
-    print(f"Unexpected error: {e}\n")
-    exit(1)
-
 current_time = datetime.datetime.now()
 record_ids = get_filtered_records(CONFIG.domains, CONFIG.exceptions)
 
@@ -99,9 +86,7 @@ while True:
         current_time = datetime.datetime.now()
     time.sleep(180)
     new_ip = get_current_ip()
-    if (last_ip != new_ip) or (new_ip != get_record_ip(record_ids[0])):
-        with open("./last_ip.txt", "w") as f:
-            f.write(new_ip)
+    if new_ip != get_record_ip(record_ids[0]):
         for record_id in record_ids:
             requests.patch(f"https://api.digitalocean.com/v2/domains/{DOMAIN}/records/{record_id}",
                            json={"type": "A", "data": f"{new_ip}"},
