@@ -43,6 +43,10 @@ def get_records(domain: str) -> list[dict[str, str | int | None]]:
                                  params={"type": "A", "per_page": 200},
                                  headers={"Authorization": f"Bearer {CONFIG.api_key}"})
     json_result = target_record.json()["domain_records"]
+    # Handle the case where the domain name is not defined on Digital Ocean
+    if target_record.status_code == 404:
+        print(f"The domain {domain} could not be found in Digital Ocean")
+        exit(1)
     return json_result
 
 
