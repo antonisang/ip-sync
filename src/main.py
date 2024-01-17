@@ -1,4 +1,5 @@
 import time
+import random
 import datetime
 import requests
 from schema import Config
@@ -90,15 +91,19 @@ record_ids = get_filtered_records(CONFIG.domains, CONFIG.exceptions)
 
 # Driver code
 while True:
+    # After an hour we refresh the IDs in case a subdomain has been deleted or created
     if current_time + datetime.timedelta(hours=1) < datetime.datetime.now():
         record_ids = get_filtered_records(CONFIG.domains, CONFIG.exceptions)
         current_time = datetime.datetime.now()
     time.sleep(180)
     new_ip = get_current_ip()
-    if new_ip != get_record_ip(record_ids[0]):
-        for record_id in record_ids:
-            requests.patch(f"https://api.digitalocean.com/v2/domains/{DOMAIN}/records/{record_id}",
-                           json={"type": "A", "data": f"{new_ip}"},
-                           headers={"Authorization": f"Bearer {API_KEY}"})
-            time.sleep(5)
-        last_ip = new_ip
+    random_domain = random.choice(CONFIG.domains)
+    # We are comparing the new_ip against a random record because we assume that all records have the same IP address
+    if new_ip != get_record_ip(random_domain, random.choice(record_ids[random_domain])):
+        for record_domain in record_ids:
+            for record_id in record_ids[record_domain]:
+                requests.patch(f"https://api.digitalocean.com/v2/domains/{record_domain}/records/{record_id}",
+                               json={"type": "A", "data": f"{new_ip}"},
+                               headers={"Authorization": f"Bearer {CONFIG.api_key}"})
+                # Avoid hitting the API rate limit
+                time.sleep(5)
